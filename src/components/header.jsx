@@ -1,12 +1,11 @@
-import { Link } from 'react-router-dom';
-
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { ThemeContext } from '../contexts/ThemeContext'; // Importamos o contexto
+import { ThemeContext } from '../contexts/ThemeContext';
+import { AuthContext } from '../contexts/AuthContext'; // Importamos o contexto de autenticação
 
 function Header() {
-  // Consumimos as variáveis globais do tema
   const { tema, alternarTema } = useContext(ThemeContext);
+  const { usuario, logout } = useContext(AuthContext); // Consumimos o usuário e o logout
 
   return (
     <header style={{ 
@@ -18,13 +17,21 @@ function Header() {
       alignItems: 'center',
       borderBottom: tema === 'escuro' ? '2px solid #555' : 'none'
     }}>
-      <h1>MeuCineClube</h1>
+      <div>
+        <h1>MeuCineClube</h1>
+        {usuario && <span style={{ fontSize: '14px', color: '#aaa' }}>Olá, <strong>{usuario.nome}</strong>! 👋</span>}
+      </div>
       <nav style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
         <Link to="/" style={{ color: '#fff', textDecoration: 'none' }}>Home</Link>
-        <Link to="/login" style={{ color: '#fff', textDecoration: 'none' }}>Login</Link>
+        
+        {!usuario ? (
+          <Link to="/login" style={{ color: '#fff', textDecoration: 'none' }}>Login</Link>
+        ) : (
+          <button onClick={logout} style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer', fontSize: '16px' }}>Sair</button>
+        )}
+        
         <Link to="/favoritos" style={{ color: '#fff', textDecoration: 'none' }}>Favoritos</Link>
         
-        {/* Botão que muda o tema */}
         <button 
           onClick={alternarTema} 
           style={{ 
